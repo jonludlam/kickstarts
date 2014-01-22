@@ -86,9 +86,14 @@ service mysqld start
 
 cloudstack-setup-databases cloud:cloud@localhost --deploy-as=root
 cloudstack-setup-management
-#/usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /secondary -u http://d21ifhcun6b1t2.cloudfront.net/templates/4.2/systemvmtemplate-2013-07-12-master-xen.vhd.bz2 -h xenserver -F
+/usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /secondary -u http://d21ifhcun6b1t2.cloudfront.net/templates/4.2/systemvmtemplate-2013-07-12-master-xen.vhd.bz2 -h xenserver -F
+wget http://download.cloud.com.s3.amazonaws.com/tools/vhd-util
+chmod 755 vhd-util
+mv vhd-util /usr/share/cloudstack-common/scripts/vm/hypervisor/xenserver
+
 
 chkconfig dnsmasq on
+
 
 cat > /etc/sysconfig/iptables.cs <<EOF
 # Firewall configuration written by system-config-firewall
@@ -108,6 +113,7 @@ cat > /etc/sysconfig/iptables.cs <<EOF
 -A INPUT -s 192.168.1.0/24 -m state --state NEW -p udp --dport 875 -j ACCEPT
 -A INPUT -s 192.168.1.0/24 -m state --state NEW -p tcp --dport 662 -j ACCEPT
 -A INPUT -s 192.168.1.0/24 -m state --state NEW -p udp --dport 662 -j ACCEPT
+-A INPUT -p tcp --dport 8080 -j ACCEPT
 -A INPUT -i eth1 -p tcp -m tcp --dport 67 -j ACCEPT
 -A INPUT -i eth1 -p udp -m udp --dport 67 -j ACCEPT
 -A INPUT -i eth1 -p tcp -m tcp --dport 53 -j ACCEPT
